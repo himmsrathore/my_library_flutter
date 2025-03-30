@@ -8,6 +8,7 @@ import 'package:mylibrary/models/user_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
+import '../UserProfileScreen.dart';
 
 class UserHomeScreen extends StatefulWidget {
   @override
@@ -70,7 +71,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               : RefreshIndicator(
                   key: _refreshKey,
                   onRefresh: fetchAllData,
-                  color: Colors.teal[600],
+                  color: const Color.fromARGB(255, 15, 6, 84),
                   child: CustomScrollView(
                     physics: const BouncingScrollPhysics(),
                     slivers: [
@@ -100,7 +101,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         onPressed: () {
           _refreshKey.currentState?.show();
         },
-        backgroundColor: Colors.teal[600],
+        backgroundColor: const Color.fromARGB(255, 8, 11, 58),
         child: const Icon(Icons.refresh, color: Colors.white),
         elevation: 4,
       ),
@@ -113,7 +114,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.teal[600]!),
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue[600]!),
           ),
           const SizedBox(height: 16),
           Text(
@@ -165,7 +166,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               icon: const Icon(Icons.refresh),
               label: const Text("Try Again"),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal[600],
+                backgroundColor: Colors.blue[600],
                 foregroundColor: Colors.white,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -182,39 +183,139 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   Widget _buildAppBar() {
     return SliverAppBar(
-      expandedHeight: 120,
+      expandedHeight: 180,
       floating: false,
       pinned: true,
-      backgroundColor: Colors.teal[600],
-      systemOverlayStyle: SystemUiOverlayStyle.light,
+      snap: false,
+      stretch: true,
+      backgroundColor: const Color(0xFF0A0E2E),
+      systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
+        statusBarColor: Colors.transparent,
+      ),
       flexibleSpace: FlexibleSpaceBar(
-        title: Text(
-          libraryDetails?.name ?? "My Library",
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
+        stretchModes: const [
+          StretchMode.zoomBackground,
+          StretchMode.blurBackground,
+        ],
+        centerTitle: true,
+        title: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            libraryDetails?.name?.toUpperCase() ?? "MY LIBRARY",
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+              letterSpacing: 1.2,
+              color: Colors.white, // This is the only line you need to change
+              shadows: [
+                Shadow(
+                  color: Colors.black.withOpacity(0.3),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
-        background: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.teal[800]!, Colors.teal[600]!],
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Gradient background
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    const Color(0xFF1A237E),
+                    const Color(0xFF0A0E2E).withOpacity(0.9),
+                  ],
+                ),
+              ),
             ),
-          ),
+            // Subtle pattern overlay
+            Opacity(
+              opacity: 0.05,
+              child: Image.asset(
+                'assets/images/pattern.png', // Add a subtle pattern asset
+                fit: BoxFit.cover,
+              ),
+            ),
+            // Library icon decoration
+            Positioned(
+              right: 20,
+              bottom: 20,
+              child: Opacity(
+                opacity: 0.2,
+                child: Icon(
+                  Icons.library_books,
+                  size: 120,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      shape: const ContinuousRectangleBorder(
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(40),
+          bottomRight: Radius.circular(40),
         ),
       ),
       actions: [
+        const SizedBox(width: 8),
         IconButton(
-          icon: const Icon(Icons.notifications_outlined),
-          onPressed: () {},
+          icon: Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withOpacity(0.1),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.3),
+                width: 1,
+              ),
+            ),
+            child: const Icon(
+              Icons.person_outline,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
+          onPressed: () {
+            if (user != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserProfileScreen(user: user!),
+                ),
+              );
+            }
+          },
         ),
-        IconButton(
-          icon: const Icon(Icons.person_outline),
-          onPressed: () {},
-        ),
+        const SizedBox(width: 12),
       ],
+      leading: IconButton(
+        icon: Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white.withOpacity(0.1),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.3),
+              width: 1,
+            ),
+          ),
+          child: const Icon(
+            Icons.menu,
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
+        onPressed: () {},
+      ),
     );
   }
 
@@ -231,13 +332,13 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               children: [
                 CircleAvatar(
                   radius: 30,
-                  backgroundColor: Colors.teal[100],
+                  backgroundColor: Colors.blue[100],
                   child: Text(
                     user?.name?.substring(0, 1).toUpperCase() ?? "U",
                     style: GoogleFonts.poppins(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.teal[800],
+                      color: Colors.blue[800],
                     ),
                   ),
                 ),
@@ -258,7 +359,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         style: GoogleFonts.poppins(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.teal[800],
+                          color: Colors.blue[800],
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -292,7 +393,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         Icon(
           icon,
           size: 20,
-          color: Colors.teal[600],
+          color: Colors.blue[600],
         ),
         const SizedBox(width: 8),
         Expanded(
@@ -533,12 +634,12 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     width: 50,
                     height: 50,
                     decoration: BoxDecoration(
-                      color: Colors.teal[50],
+                      color: Colors.blue[50],
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(
                       Icons.book,
-                      color: Colors.teal[800],
+                      color: Colors.blue[800],
                       size: 28,
                     ),
                   ),
@@ -562,7 +663,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     icon: const Icon(Icons.download, size: 18),
                     label: const Text("Download"),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal[600],
+                      backgroundColor: Colors.blue[600],
                       foregroundColor: Colors.white,
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(
@@ -587,7 +688,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       children: [
         Icon(
           icon,
-          color: Colors.teal[800],
+          color: Colors.blue[800],
           size: 24,
         ),
         const SizedBox(width: 8),
@@ -596,7 +697,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           style: GoogleFonts.poppins(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.teal[800],
+            color: Colors.blue[800],
           ),
         ),
       ],

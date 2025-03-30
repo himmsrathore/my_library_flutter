@@ -83,7 +83,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           'Make Payment',
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.bold,
-            color: Colors.teal[800],
+            color: Colors.blue[800],
           ),
         ),
         content: SingleChildScrollView(
@@ -94,7 +94,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 controller: _amountController,
                 decoration: InputDecoration(
                   labelText: 'Amount',
-                  prefixIcon: Icon(Icons.attach_money, color: Colors.teal),
+                  prefixIcon: Icon(Icons.attach_money, color: Colors.blue),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -106,7 +106,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 value: _selectedPaymentMethod,
                 decoration: InputDecoration(
                   labelText: 'Payment Method',
-                  prefixIcon: Icon(Icons.credit_card, color: Colors.teal),
+                  prefixIcon: Icon(Icons.credit_card, color: Colors.blue),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -151,7 +151,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               _processPayment(amount, _selectedPaymentMethod);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.teal,
+              backgroundColor: Colors.blue,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -182,7 +182,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             Text("Processing payment..."),
           ],
         ),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.blue,
         duration: Duration(seconds: 2),
       ),
     );
@@ -282,12 +282,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   width: 50,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: Colors.teal.shade50,
+                    color: Colors.blue.shade50,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
                     Icons.receipt,
-                    color: Colors.teal[700],
+                    color: Colors.blue[700],
                     size: 28,
                   ),
                 ),
@@ -301,7 +301,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: Colors.teal[800],
+                          color: Colors.blue[800],
                         ),
                       ),
                       SizedBox(height: 4),
@@ -385,7 +385,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             "Payments",
             style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
           ),
-          backgroundColor: Colors.teal[600],
+          backgroundColor: Colors.blue[600],
         ),
         body: Center(
           child: Card(
@@ -402,7 +402,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   Icon(
                     Icons.admin_panel_settings,
                     size: 48,
-                    color: Colors.teal[300],
+                    color: Colors.blue[300],
                   ),
                   SizedBox(height: 16),
                   Text(
@@ -410,7 +410,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     style: GoogleFonts.poppins(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.teal[800],
+                      color: Colors.blue[800],
                     ),
                   ),
                   SizedBox(height: 8),
@@ -436,7 +436,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           "Payments",
           style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
         ),
-        backgroundColor: Colors.teal[600],
+        backgroundColor: Colors.blue[600],
         elevation: 0,
         actions: [
           IconButton(
@@ -450,7 +450,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Colors.teal.shade50, Colors.white],
+            colors: [Colors.blue.shade50, Colors.white],
           ),
         ),
         child: _isLoading
@@ -459,14 +459,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.teal),
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
                     ),
                     SizedBox(height: 16),
                     Text(
                       "Loading payment history...",
                       style: GoogleFonts.poppins(
                         fontSize: 16,
-                        color: Colors.teal[700],
+                        color: Colors.blue[700],
                       ),
                     ),
                   ],
@@ -520,7 +520,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                   : 'Retry',
                             ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.teal,
+                              backgroundColor: Colors.blue,
                               foregroundColor: Colors.white,
                               padding: EdgeInsets.symmetric(
                                   horizontal: 24, vertical: 12),
@@ -536,7 +536,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 : RefreshIndicator(
                     key: _refreshKey,
                     onRefresh: _fetchPayments,
-                    color: Colors.teal[600],
+                    color: Colors.blue[600],
                     child: Column(
                       children: [
                         Expanded(
@@ -581,7 +581,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                         icon: Icon(Icons.add),
                                         label: Text("Make First Payment"),
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.teal,
+                                          backgroundColor: Colors.blue,
                                           foregroundColor: Colors.white,
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 20, vertical: 12),
@@ -628,7 +628,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.teal[600],
+                                backgroundColor: Colors.blue[600],
                                 foregroundColor: Colors.white,
                                 minimumSize: Size(double.infinity, 56),
                                 elevation: 0,
@@ -646,7 +646,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ? null
           : FloatingActionButton(
               onPressed: _showPaymentDialog,
-              backgroundColor: Colors.teal,
+              backgroundColor: Colors.blue,
               child: Icon(Icons.payment, color: Colors.white),
             ),
     );

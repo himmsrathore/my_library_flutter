@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mylibrary/screens/login_screen.dart'; // Adjust path
+import 'package:mylibrary/screens/login_screen.dart'; // Adjust the path
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:mylibrary/theme.dart'; // Import theme.dart
+// Add this package
 
 void main() {
   runApp(MyApp());
@@ -10,11 +13,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'MyLibrary',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.light(), // Apply a theme
       initialRoute: '/splash',
       routes: {
         '/splash': (context) => SplashScreen(),
         '/login': (context) => LoginScreen(),
-        // '/home' route removed; handled by LoginScreen
       },
     );
   }
@@ -49,9 +53,14 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    Future.delayed(Duration(seconds: 3), () {
+    _navigateToLogin();
+  }
+
+  Future<void> _navigateToLogin() async {
+    await Future.delayed(Duration(seconds: 3));
+    if (mounted) {
       Navigator.pushReplacementNamed(context, '/login');
-    });
+    }
   }
 
   @override
@@ -63,25 +72,35 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 4, 19, 52),
-      body: Center(
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: ScaleTransition(
-            scale: _scaleAnimation,
-            child: Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(
-                  image: AssetImage('assets/logo/logo.png'),
-                  fit: BoxFit.cover,
+      backgroundColor: Color(0xFF041334), // Dark Blue Background
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: FadeTransition(
+              opacity: _fadeAnimation,
+              child: ScaleTransition(
+                scale: _scaleAnimation,
+                child: Container(
+                  width: 180,
+                  height: 180,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: AssetImage('assets/logo/logo.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+          SizedBox(height: 30),
+          SpinKitThreeBounce(
+            color: Colors.white,
+            size: 30,
+          ),
+        ],
       ),
     );
   }

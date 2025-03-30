@@ -85,7 +85,7 @@ class _SuperAdminHomeScreenState extends State<SuperAdminHomeScreen> {
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
-                          color: Colors.teal,
+                          color: Colors.blue,
                         ),
                       ),
                       SizedBox(height: 20),

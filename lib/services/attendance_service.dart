@@ -86,7 +86,10 @@ class AttendanceService {
 
   static Future<List<AttendanceModel>> getAttendance() async {
     String? token = await _getToken();
-    if (token == null) return [];
+    if (token == null) {
+      print("No token found");
+      return []; // ✅ Return an empty list instead of a map
+    }
 
     try {
       final response = await http.get(
@@ -100,13 +103,16 @@ class AttendanceService {
       if (response.statusCode == 200) {
         List<dynamic> attendanceJson =
             jsonDecode(response.body)["attendance"] ?? [];
+        print("Token: $token");
         return attendanceJson
             .map((json) => AttendanceModel.fromJson(json))
             .toList();
       } else {
+        print("Error response: ${response.statusCode} - ${response.body}");
         return [];
       }
     } catch (e) {
+      print("Error fetching attendance: $e");
       return [];
     }
   }

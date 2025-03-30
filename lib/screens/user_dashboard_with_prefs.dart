@@ -78,7 +78,7 @@ class _UserDashboardState extends State<UserDashboard> {
     return Scaffold(
       appBar: AppBar(
         title: Text("MyLibrary"),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.blue,
         elevation: 0,
         actions: [
           IconButton(
@@ -114,7 +114,7 @@ class _UserDashboardState extends State<UserDashboard> {
       bottomNavigationBar: BottomNavigationBar(
         items: _navItems,
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.teal,
+        selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
       ),

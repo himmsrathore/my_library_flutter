@@ -27,18 +27,25 @@ class _AttendanceSummaryScreenState extends State<AttendanceSummaryScreen> {
   Future<void> _fetchAttendance() async {
     setState(() {
       _isLoading = true;
-      _errorMessage = '';
+      _errorMessage = 'www ERRRE'; // Clear any previous error
     });
 
     try {
       List<AttendanceModel> records = await AttendanceService.getAttendance();
       setState(() {
         _attendanceRecords = records;
-        _errorMessage = records.isEmpty ? "No attendance records found." : '';
+        print("Raw sdsa: ${_attendanceRecords}");
+        // Only set error message if truly empty
+        if (records.isEmpty) {
+          _errorMessage = "No attendance records found.";
+        } else {
+          _errorMessage = ''; // Explicitly clear when records exist
+        }
       });
     } catch (e) {
       setState(() {
-        _errorMessage = "Error loading attendance records.";
+        _errorMessage = "Error loading attendance records: ${e.toString()}";
+        _attendanceRecords = []; // Clear any stale data
       });
     } finally {
       setState(() => _isLoading = false);
@@ -55,7 +62,7 @@ class _AttendanceSummaryScreenState extends State<AttendanceSummaryScreen> {
         child: Row(
           children: [
             CircleAvatar(
-              backgroundColor: Colors.teal,
+              backgroundColor: Colors.blue,
               child: Icon(Icons.event_available, color: Colors.white),
             ),
             SizedBox(width: 16),
@@ -83,7 +90,7 @@ class _AttendanceSummaryScreenState extends State<AttendanceSummaryScreen> {
                   Text(
                     "Seat: ${attendance.seatId}",
                     style:
-                        GoogleFonts.poppins(fontSize: 14, color: Colors.teal),
+                        GoogleFonts.poppins(fontSize: 14, color: Colors.blue),
                   ),
                 ],
               ),
@@ -99,7 +106,7 @@ class _AttendanceSummaryScreenState extends State<AttendanceSummaryScreen> {
     if (_isLoading) {
       return Center(
           child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.teal)));
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue)));
     }
 
     if (_errorMessage.isNotEmpty) {
@@ -117,7 +124,7 @@ class _AttendanceSummaryScreenState extends State<AttendanceSummaryScreen> {
               onPressed: _fetchAttendance,
               child: Text("Retry"),
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal, foregroundColor: Colors.white),
+                  backgroundColor: Colors.blue, foregroundColor: Colors.white),
             ),
           ],
         ),
@@ -142,7 +149,7 @@ class _AttendanceSummaryScreenState extends State<AttendanceSummaryScreen> {
       appBar: AppBar(
         title: Text("Attendance Summary",
             style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.teal[600],
+        backgroundColor: Colors.blue[600],
         elevation: 0,
         actions: [
           IconButton(icon: Icon(Icons.refresh), onPressed: _fetchAttendance)
@@ -153,7 +160,7 @@ class _AttendanceSummaryScreenState extends State<AttendanceSummaryScreen> {
           gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.teal.shade50, Colors.white]),
+              colors: [Colors.blue.shade50, Colors.white]),
         ),
         child: _buildBody(),
       ),
