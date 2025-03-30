@@ -8,7 +8,7 @@ import 'package:mylibrary/models/user_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
-import '../UserProfileScreen.dart';
+import '../user_profile_screen.dart';
 
 class UserHomeScreen extends StatefulWidget {
   @override
@@ -114,7 +114,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.blue[600]!),
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.teal[600]!),
           ),
           const SizedBox(height: 16),
           Text(
@@ -290,6 +290,16 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => UserProfileScreen(user: user!),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'User profile not available',
+                    style: GoogleFonts.poppins(),
+                  ),
+                  backgroundColor: Colors.red[400],
                 ),
               );
             }
@@ -697,7 +707,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           style: GoogleFonts.poppins(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.blue[800],
+            color: Colors.teal[800],
           ),
         ),
       ],

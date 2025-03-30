@@ -300,4 +300,8 @@ class LibraryService {
 
     return response.statusCode >= 200 && response.statusCode < 300;
   }
+
+  updateUserProfile(UserModel updatedUser) {}
+
+  logout() {}
 }

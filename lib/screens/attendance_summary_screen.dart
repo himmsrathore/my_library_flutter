@@ -27,25 +27,21 @@ class _AttendanceSummaryScreenState extends State<AttendanceSummaryScreen> {
   Future<void> _fetchAttendance() async {
     setState(() {
       _isLoading = true;
-      _errorMessage = 'www ERRRE'; // Clear any previous error
+      _errorMessage = '';
     });
 
     try {
       List<AttendanceModel> records = await AttendanceService.getAttendance();
       setState(() {
         _attendanceRecords = records;
-        print("Raw sdsa: ${_attendanceRecords}");
-        // Only set error message if truly empty
         if (records.isEmpty) {
-          _errorMessage = "No attendance records found.";
-        } else {
-          _errorMessage = ''; // Explicitly clear when records exist
+          _errorMessage = "No attendance records found";
         }
       });
     } catch (e) {
       setState(() {
-        _errorMessage = "Error loading attendance records: ${e.toString()}";
-        _attendanceRecords = []; // Clear any stale data
+        _errorMessage = "Failed to load records: ${e.toString()}";
+        _attendanceRecords = [];
       });
     } finally {
       setState(() => _isLoading = false);
@@ -53,92 +49,243 @@ class _AttendanceSummaryScreenState extends State<AttendanceSummaryScreen> {
   }
 
   Widget _buildAttendanceCard(AttendanceModel attendance) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
-            CircleAvatar(
-              backgroundColor: Colors.blue,
-              child: Icon(Icons.event_available, color: Colors.white),
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.blue.shade50,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                attendance.checkOut == null ? Icons.login : Icons.logout,
+                color: Colors.blue.shade800,
+              ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Date: ${attendance.dateAttended}",
+                    attendance.dateAttended,
                     style: GoogleFonts.poppins(
-                        fontSize: 16, fontWeight: FontWeight.bold),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey.shade800,
+                    ),
                   ),
-                  Text(
-                    "Check-In: ${attendance.checkIn}",
-                    style: GoogleFonts.poppins(fontSize: 14),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      _buildStatusIndicator(
+                        "Check-In",
+                        attendance.checkIn,
+                        Colors.green,
+                      ),
+                      const SizedBox(width: 16),
+                      _buildStatusIndicator(
+                        "Check-Out",
+                        attendance.checkOut ?? "Not checked out",
+                        attendance.checkOut == null
+                            ? Colors.orange
+                            : Colors.green,
+                      ),
+                    ],
                   ),
-                  Text(
-                    "Check-Out: ${attendance.checkOut ?? 'Not Checked Out'}",
-                    style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: attendance.checkOut == null
-                            ? Colors.red
-                            : Colors.green),
-                  ),
-                  Text(
-                    "Seat: ${attendance.seatId}",
-                    style:
-                        GoogleFonts.poppins(fontSize: 14, color: Colors.blue),
-                  ),
+                  const SizedBox(height: 8),
+                  if (attendance.seatId != null)
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.event_seat,
+                          size: 16,
+                          color: Colors.blue.shade600,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "Seat ${attendance.seatId}",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Colors.blue.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+            Icon(
+              Icons.chevron_right,
+              color: Colors.grey.shade400,
+            ),
           ],
         ),
       ),
     );
   }
 
+  Widget _buildStatusIndicator(String label, String value, Color color) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 12,
+            color: Colors.grey.shade600,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildBody() {
     if (_isLoading) {
-      return Center(
-          child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue)));
-    }
-
-    if (_errorMessage.isNotEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error, color: Colors.red, size: 50),
-            SizedBox(height: 10),
-            Text(_errorMessage,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(fontSize: 16)),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _fetchAttendance,
-              child: Text("Retry"),
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, foregroundColor: Colors.white),
+            const CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "Loading attendance records...",
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+              ),
             ),
           ],
         ),
       );
     }
 
+    if (_errorMessage.isNotEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 60,
+                color: Colors.red.shade400,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "Oops!",
+                style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red.shade400,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _errorMessage,
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  color: Colors.grey.shade700,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: _fetchAttendance,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue.shade600,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                child: Text(
+                  "Try Again",
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return RefreshIndicator(
       onRefresh: _fetchAttendance,
-      child: ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 10),
-        itemCount: _attendanceRecords.length,
-        itemBuilder: (context, index) {
-          return _buildAttendanceCard(_attendanceRecords[index]);
-        },
+      color: Colors.blue,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Card(
+              elevation: 0,
+              color: Colors.blue.shade50,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.info_outline,
+                      color: Colors.blue.shade800,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        "Showing ${_attendanceRecords.length} attendance records",
+                        style: GoogleFonts.poppins(
+                          color: Colors.blue.shade800,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.only(bottom: 16),
+              itemCount: _attendanceRecords.length,
+              itemBuilder: (context, index) {
+                return _buildAttendanceCard(_attendanceRecords[index]);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -147,20 +294,39 @@ class _AttendanceSummaryScreenState extends State<AttendanceSummaryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Attendance Summary",
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        backgroundColor: Colors.blue[600],
+        title: Text(
+          "Attendance History",
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.blue.shade800,
         elevation: 0,
+        centerTitle: true,
+        shape: const ContinuousRectangleBorder(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(24),
+            bottomRight: Radius.circular(24),
+          ),
+        ),
         actions: [
-          IconButton(icon: Icon(Icons.refresh), onPressed: _fetchAttendance)
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.white),
+            onPressed: _fetchAttendance,
+          ),
         ],
       ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.blue.shade50, Colors.white]),
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.blue.shade50,
+              Colors.grey.shade50,
+            ],
+          ),
         ),
         child: _buildBody(),
       ),

@@ -3,6 +3,7 @@
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/payment_model.dart';
+import 'dart:io'; // For File handling
 
 class PaymentService {
   final Dio _dio = Dio(
@@ -70,10 +71,12 @@ class PaymentService {
   }
 
   /// Process payment with the API
+  /// Process payment with the API, including an optional payment slip
   Future<bool> makePayment({
     required double amount,
     required String paymentMethod,
     int? planId,
+    File? paymentSlip, // Add payment slip as an optional parameter
   }) async {
     if (amount <= 0) throw Exception("Amount must be greater than 0");
     if (paymentMethod.isEmpty) throw Exception("Payment method is required");
@@ -84,18 +87,26 @@ class PaymentService {
         throw Exception("Unauthorized: Please log in.");
       }
 
+      // Create FormData to handle both file and text data
+      FormData formData = FormData.fromMap({
+        "amount": amount,
+        "payment_method": paymentMethod,
+        if (planId != null) "plan_id": planId,
+        if (paymentSlip != null)
+          "payment_slip": await MultipartFile.fromFile(
+            paymentSlip.path,
+            filename: paymentSlip.path.split('/').last,
+          ),
+      });
+
       print(
-          "DEBUG: Making payment with token: $token, amount: $amount, method: $paymentMethod");
+          "DEBUG: Making payment with token: $token, amount: $amount, method: $paymentMethod, slip: ${paymentSlip?.path}");
       final response = await _dio.post(
         "payments/pay",
         options: Options(
           headers: {'Authorization': 'Bearer $token'},
         ),
-        data: {
-          "amount": amount,
-          "payment_method": paymentMethod,
-          "plan_id": planId,
-        },
+        data: formData,
       );
 
       print(

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mylibrary/services/library_admin_service.dart';
 
 class LibraryAdminHomeScreen extends StatefulWidget {
   @override
@@ -21,39 +19,16 @@ class _LibraryAdminHomeScreenState extends State<LibraryAdminHomeScreen> {
 
   Future<void> fetchLibraryDetails() async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? token = prefs.getString("token");
-      if (token == null) {
-        setState(() {
-          errorMessage = "No authentication token found";
-          isLoading = false;
-        });
-        return;
-      }
+      LibraryAdminService libraryService = LibraryAdminService();
+      Map<String, dynamic> data = await libraryService.fetchLibraryDetails();
 
-      final response = await http.get(
-        Uri.parse("http://10.0.2.2/library/library/public/api/library"),
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $token",
-        },
-      );
-
-      if (response.statusCode == 200) {
-        setState(() {
-          libraryDetails = jsonDecode(response.body);
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          errorMessage =
-              "Failed to load library details: ${response.statusCode}";
-          isLoading = false;
-        });
-      }
+      setState(() {
+        libraryDetails = data;
+        isLoading = false;
+      });
     } catch (e) {
       setState(() {
-        errorMessage = "Error: $e";
+        errorMessage = e.toString();
         isLoading = false;
       });
     }
@@ -61,48 +36,39 @@ class _LibraryAdminHomeScreenState extends State<LibraryAdminHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey[100],
-      padding: EdgeInsets.all(16),
-      child: Center(
+    return Scaffold(
+      appBar: AppBar(title: Text("Library Admin Dashboard")),
+      body: Center(
         child: isLoading
             ? CircularProgressIndicator()
             : errorMessage != null
                 ? Text(
                     errorMessage!,
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18, color: Colors.red),
                   )
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Library Admin Dashboard",
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
+                : Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Library: ${libraryDetails!['name'] ?? 'N/A'}",
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        "Oversee library seats and attendance",
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        "Library: ${libraryDetails!['name'] ?? 'N/A'}",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      Text(
-                        "Address: ${libraryDetails!['address'] ?? 'N/A'}",
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ],
+                        SizedBox(height: 10),
+                        Text("Email: ${libraryDetails!['email'] ?? 'N/A'}"),
+                        Text("Phone: ${libraryDetails!['phone'] ?? 'N/A'}"),
+                        Text("Address: ${libraryDetails!['address'] ?? 'N/A'}"),
+                        Text("Status: ${libraryDetails!['status'] ?? 'N/A'}"),
+                        SizedBox(height: 20),
+                        if (libraryDetails!['logo'] != null)
+                          Image.network(
+                            "http://10.0.2.2:8000/storage/${libraryDetails!['logo']}",
+                            height: 100,
+                          ),
+                      ],
+                    ),
                   ),
       ),
     );

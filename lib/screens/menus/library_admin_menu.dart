@@ -13,9 +13,11 @@ class LibraryAdminMenu {
   ];
 
   static List<BottomNavigationBarItem> items = [
-    BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-    BottomNavigationBarItem(icon: Icon(Icons.event_seat), label: 'Select Seat'),
-    BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Attendance'),
+    BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Lib Admin'),
+    BottomNavigationBarItem(icon: Icon(Icons.event_seat), label: 'Seat Status'),
+    BottomNavigationBarItem(
+        icon: Icon(Icons.history), label: 'Attendance Status'),
+    BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Payment Status'),
     BottomNavigationBarItem(icon: Icon(Icons.info), label: 'About'),
   ];
 }

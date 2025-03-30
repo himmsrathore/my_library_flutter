@@ -1,4 +1,7 @@
 // models/student_model.dart
+import 'seat_model.dart';
+import 'payment_model.dart';
+
 class StudentModel {
   final int id;
   final String name;
@@ -44,45 +47,6 @@ class StudentModel {
           .toList(),
       profilePhoto: json['profile_photo'],
       libraryId: json['library_id'],
-    );
-  }
-}
-
-// ✅ Seat Model
-class SeatModel {
-  final int id;
-  final String number;
-
-  SeatModel({required this.id, required this.number});
-
-  factory SeatModel.fromJson(Map<String, dynamic> json) {
-    return SeatModel(
-      id: json['id'],
-      number: json['number'],
-    );
-  }
-}
-
-// ✅ Payment Model
-class PaymentModel {
-  final int id;
-  final double amount;
-  final String date;
-  final String status;
-
-  PaymentModel({
-    required this.id,
-    required this.amount,
-    required this.date,
-    required this.status,
-  });
-
-  factory PaymentModel.fromJson(Map<String, dynamic> json) {
-    return PaymentModel(
-      id: json['id'],
-      amount: (json['amount'] as num).toDouble(), // Ensure it's a double
-      date: json['date'],
-      status: json['status'],
     );
   }
 }
