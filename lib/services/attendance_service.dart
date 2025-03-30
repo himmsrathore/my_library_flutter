@@ -1,25 +1,28 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mylibrary/models/attendance_model.dart';
 
 class AttendanceService {
   static const String baseUrl = "http://10.0.2.2/library/library/public/api";
 
-  static Future<List<dynamic>> getAllSeats() async {
+  static Future<String?> _getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString("token");
+    return prefs.getString("token");
+  }
+
+  static Future<List<dynamic>> getAllSeats() async {
+    String? token = await _getToken();
+    if (token == null) return [];
 
     try {
       final response = await http.get(
         Uri.parse("$baseUrl/attendance/seats"),
         headers: {
           "Authorization": "Bearer $token",
-          "Accept": "application/json",
+          "Accept": "application/json"
         },
       );
-
-      print("Get All Seats - Status: ${response.statusCode}");
-      print("Response Body: ${response.body}");
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body)["seats"] ?? [];
@@ -34,9 +37,7 @@ class AttendanceService {
   }
 
   static Future<Map<String, dynamic>> checkIn(int seatId) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString("token");
-
+    String? token = await _getToken();
     if (token == null) return {'success': false, 'message': 'No token found'};
 
     try {
@@ -50,24 +51,18 @@ class AttendanceService {
         body: jsonEncode({"seat_id": seatId}),
       );
 
-      print("Check-In Response - Status: ${response.statusCode}");
-      print("Response Body: ${response.body}");
-
       final data = jsonDecode(response.body);
       return {
         'success': response.statusCode == 200,
         'message': data['message'] ?? 'Unknown error',
       };
     } catch (e) {
-      print("Error during check-in: $e");
-      return {'success': false, 'message': e.toString()};
+      return {'success': false, 'message': 'Error during check-in: $e'};
     }
   }
 
   static Future<Map<String, dynamic>> checkOut() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString("token");
-
+    String? token = await _getToken();
     if (token == null) return {'success': false, 'message': 'No token found'};
 
     try {
@@ -75,12 +70,9 @@ class AttendanceService {
         Uri.parse("$baseUrl/attendance/check-out"),
         headers: {
           "Authorization": "Bearer $token",
-          "Accept": "application/json",
+          "Accept": "application/json"
         },
       );
-
-      print("Check-Out Response - Status: ${response.statusCode}");
-      print("Response Body: ${response.body}");
 
       final data = jsonDecode(response.body);
       return {
@@ -88,8 +80,34 @@ class AttendanceService {
         'message': data['message'] ?? 'Unknown error',
       };
     } catch (e) {
-      print("Error during check-out: $e");
-      return {'success': false, 'message': e.toString()};
+      return {'success': false, 'message': 'Error during check-out: $e'};
+    }
+  }
+
+  static Future<List<AttendanceModel>> getAttendance() async {
+    String? token = await _getToken();
+    if (token == null) return [];
+
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/attendance"),
+        headers: {
+          "Authorization": "Bearer $token",
+          "Accept": "application/json"
+        },
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> attendanceJson =
+            jsonDecode(response.body)["attendance"] ?? [];
+        return attendanceJson
+            .map((json) => AttendanceModel.fromJson(json))
+            .toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      return [];
     }
   }
 }

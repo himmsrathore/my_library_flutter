@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^6.1.2  
-
+  flutter_secure_storage: ^9.2.4
   # Google Fonts
   google_fonts: ^6.2.0
 
@@ -37,6 +37,7 @@ dependencies:
   timeago: ^3.7.0
   flutter_animate: ^4.1.0  # Use the latest version
   dio: ^5.8.0+1
+  
 
 
 
@@ -53,7 +54,6 @@ flutter:
 
   assets:
     - assets/logo/logo.png
-    - assets/logo/google_logo.png 
     - assets/animations/loading.json  # ✅ Add this line
 
  
