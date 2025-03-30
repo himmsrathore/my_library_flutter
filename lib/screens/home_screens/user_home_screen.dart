@@ -5,6 +5,7 @@ import 'package:mylibrary/models/book_model.dart';
 import 'package:mylibrary/models/gallery_model.dart';
 import 'package:mylibrary/models/library_model.dart';
 import 'package:mylibrary/models/user_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UserHomeScreen extends StatefulWidget {
   @override
@@ -123,16 +124,34 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       SizedBox(height: 10),
                       banners != null && banners!.isNotEmpty
                           ? Column(
-                              children: banners!
-                                  .map((banner) => Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 5),
-                                        child: Text(
-                                          banner.title,
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ))
-                                  .toList(),
+                              children: banners!.map((banner) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        banner.title,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Image.network(
+                                        banner
+                                            .image, // ✅ Display image from API
+                                        width: double.infinity,
+                                        height: 150,
+                                        fit: BoxFit.cover,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                Icon(Icons.broken_image,
+                                                    size: 50,
+                                                    color: Colors.red),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
                             )
                           : Text("No banners available"),
                       SizedBox(height: 20),
@@ -148,17 +167,42 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       ),
                       SizedBox(height: 10),
                       galleryImages != null && galleryImages!.isNotEmpty
-                          ? Column(
-                              children: galleryImages!
-                                  .map((image) => Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 5),
-                                        child: Text(
-                                          image.title,
-                                          style: TextStyle(fontSize: 16),
-                                        ),
-                                      ))
-                                  .toList(),
+                          ? GridView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount:
+                                    2, // ✅ Adjust the number of columns
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                              ),
+                              itemCount: galleryImages!.length,
+                              itemBuilder: (context, index) {
+                                final image = galleryImages![index];
+                                return Column(
+                                  children: [
+                                    Text(
+                                      image.title,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Image.network(
+                                      image.image, // ✅ Load image from API
+                                      width: double.infinity,
+                                      height: 150,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) => Icon(
+                                              Icons.broken_image,
+                                              size: 50,
+                                              color: Colors.red),
+                                    ),
+                                  ],
+                                );
+                              },
                             )
                           : Text("No gallery images available"),
                       SizedBox(height: 20),
@@ -175,16 +219,42 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                       SizedBox(height: 10),
                       books != null && books!.isNotEmpty
                           ? Column(
-                              children: books!
-                                  .map((book) => Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 5),
-                                        child: Text(
-                                          book.title,
-                                          style: TextStyle(fontSize: 16),
+                              children: books!.map((book) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        book.title,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(height: 5),
+                                      ElevatedButton.icon(
+                                        onPressed: () async {
+                                          final Uri url = Uri.parse(book.file);
+                                          if (await canLaunchUrl(url)) {
+                                            await launchUrl(url,
+                                                mode: LaunchMode
+                                                    .externalApplication);
+                                          } else {
+                                            print(
+                                                "Could not launch ${book.file}");
+                                          }
+                                        },
+                                        icon: Icon(Icons.download),
+                                        label: Text("Download"),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.teal,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 15, vertical: 10),
                                         ),
-                                      ))
-                                  .toList(),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
                             )
                           : Text("No books available"),
 

@@ -25,6 +25,9 @@ class BookModel {
   });
 
   factory BookModel.fromJson(Map<String, dynamic> json) {
+    const String baseUrl =
+        "http://10.0.2.2/library/library/public/storage/"; // ✅ Change this to match your API
+
     return BookModel(
       id: json['id'],
       libraryId: json['library_id'],
@@ -32,7 +35,8 @@ class BookModel {
       title: json['title'] ?? '',
       type: json['type'] ?? '',
       category: json['category'] ?? '',
-      file: json['file'] ?? '',
+      file:
+          json['file'] != null ? baseUrl + json['file'] : '', // ✅ Fix file URL
       description: json['description'] ?? '',
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
@@ -58,3 +62,21 @@ class BookModel {
     };
   }
 }
+
+/*
+
+[
+    {
+        "id": 1,
+        "library_id": 1,
+        "user_id": 27,
+        "title": "sdasd",
+        "type": "PDF",
+        "category": "FD",
+        "file": "books/pUQ8i3KkI9wikSpqSuhNvXwUTH4RtTNZJPOSnkrj.pdf",
+        "description": "534534",
+        "created_at": "2025-03-29T08:39:02.000000Z",
+        "updated_at": "2025-03-29T08:39:20.000000Z"
+    }
+]
+*/
