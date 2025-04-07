@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mylibrary/screens/menus/super_admin_menu.dart';
 import 'package:mylibrary/screens/menus/admin_menu.dart';
-import 'package:mylibrary/screens/menus/library_admin_menu.dart';
 import 'package:mylibrary/screens/menus/user_menu.dart';
+import 'package:mylibrary/screens/library_admin_dashboard.dart'; // Import the standalone dashboard
 
 class UserDashboard extends StatefulWidget {
   final String userRole;
@@ -36,8 +36,16 @@ class _UserDashboardState extends State<UserDashboard> {
         _navItems = AdminMenu.items;
         break;
       case "library_admin":
-        _screens = LibraryAdminMenu.screens;
-        _navItems = LibraryAdminMenu.items;
+        // Use LibraryAdminDashboard as a single screen with its own navigation
+        _screens = [LibraryAdminDashboard()];
+        _navItems = [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Dashboard'),
+          // Dummy items to match length; these won't be used since LibraryAdminDashboard has its own nav
+          BottomNavigationBarItem(icon: Icon(Icons.event_seat), label: 'Seats'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.history), label: 'Attendance'),
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'About'),
+        ];
         break;
       default:
         _screens = UserMenu.screens;
@@ -60,15 +68,16 @@ class _UserDashboardState extends State<UserDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // ❌ Removed the AppBar completely
       body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: _navItems,
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-      ),
+      bottomNavigationBar: widget.userRole == "library_admin"
+          ? null // LibraryAdminDashboard has its own BottomNavigationBar
+          : BottomNavigationBar(
+              items: _navItems,
+              currentIndex: _selectedIndex,
+              selectedItemColor: Colors.blue,
+              unselectedItemColor: Colors.grey,
+              onTap: _onItemTapped,
+            ),
     );
   }
 }

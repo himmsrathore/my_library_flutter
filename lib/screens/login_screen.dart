@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mylibrary/services/auth_service.dart';
-import 'package:mylibrary/screens/user_dashboard.dart'; // Adjust path
+import 'package:mylibrary/screens/user_dashboard.dart';
+import 'package:mylibrary/screens/admin_dashboard.dart'; // Import admin dashboard
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,34 +14,34 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
 
+  /// Handles user login
   void login() async {
     setState(() => isLoading = true);
-    bool success =
+
+    String? role =
         await AuthService.login(emailController.text, passwordController.text);
+
     setState(() => isLoading = false);
 
-    if (success) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? role = prefs.getString("role"); // Retrieve stored role
-      if (role != null) {
+    if (role != null) {
+      // Redirect based on role
+      if (role == "admin") {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => AdminDashboard()),
+        );
+      } else {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => UserDashboard(userRole: role),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Role not found, login failed"),
-            backgroundColor: Colors.redAccent,
-          ),
+              builder: (context) => UserDashboard(userRole: role)),
         );
       }
     } else {
+      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Invalid credentials"),
+          content: Text("Invalid email or password. Try again."),
           backgroundColor: Colors.redAccent,
         ),
       );

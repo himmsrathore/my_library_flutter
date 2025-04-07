@@ -7,6 +7,7 @@ class AboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(
         title: "About MyLibrary",
         actions: [
@@ -18,129 +19,133 @@ class AboutScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Hero Section
             Container(
-              padding: EdgeInsets.all(32),
+              padding: EdgeInsets.fromLTRB(32, 32, 32, 48),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
                   colors: [
-                    Colors.blue[700]!,
-                    Colors.blue[500]!,
+                    Colors.blue[800]!,
+                    Colors.blue[600]!,
                   ],
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
                 ),
               ),
               child: Column(
                 children: [
-                  // App Logo
-                  Container(
-                    padding: EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.local_library,
-                      size: 60,
-                      color: Colors.white,
-                    ),
+                  Image.asset(
+                    'assets/logo/logo-light.png',
+                    height: 100,
+                    width: 100,
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 16),
                   Text(
                     "MyLibrary",
                     style: GoogleFonts.poppins(
-                      fontSize: 32,
+                      fontSize: 36,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
                   SizedBox(height: 8),
                   Text(
-                    "Modern Library Management System",
+                    "Your Digital Library Companion",
                     style: GoogleFonts.poppins(
                       fontSize: 16,
-                      color: Colors.white.withOpacity(0.9),
+                      color: Colors.white70,
+                      letterSpacing: 1.2,
                     ),
                   ),
                 ],
               ),
             ),
 
-            // App Info Section
+            // Main Content
             Padding(
               padding: EdgeInsets.all(24),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildInfoCard(
-                    icon: Icons.description,
-                    title: "About",
-                    child: Text(
-                      "MyLibrary is a comprehensive library management solution that helps institutions track attendance, manage seating, and make reading more accessible to everyone. Our mission is to bridge the gap between readers and resources through technology.",
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        height: 1.5,
-                        color: Colors.grey[800],
-                      ),
-                      textAlign: TextAlign.center,
+                  // About Section
+                  Text(
+                    "About Us",
+                    style: GoogleFonts.poppins(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.blue[900],
                     ),
                   ),
-                  SizedBox(height: 20),
-                  _buildInfoCard(
-                    icon: Icons.people,
-                    title: "Our Team",
-                    child: Column(
-                      children: [
-                        _buildTeamMember(
-                          "xAI Team",
-                          "Development & Design",
-                          Icons.code,
-                        ),
-                        SizedBox(height: 12),
-                        _buildTeamMember(
-                          "Library Staff",
-                          "Content & Support",
-                          Icons.library_books,
-                        ),
-                      ],
+                  SizedBox(height: 12),
+                  Text(
+                    "MyLibrary revolutionizes library management with cutting-edge technology, making reading accessible and efficient for everyone. We bridge the gap between readers and resources seamlessly.",
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      height: 1.6,
+                      color: Colors.grey[800],
                     ),
                   ),
-                  SizedBox(height: 20),
-                  _buildInfoCard(
-                    icon: Icons.star,
-                    title: "Features",
-                    child: Wrap(
-                      spacing: 12,
-                      runSpacing: 12,
-                      children: [
-                        _buildFeatureChip("Seat Management"),
-                        _buildFeatureChip("Attendance Tracking"),
-                        _buildFeatureChip("Digital Payments"),
-                        _buildFeatureChip("Book Reservations"),
-                        _buildFeatureChip("User Profiles"),
-                        _buildFeatureChip("Analytics"),
-                      ],
+                  SizedBox(height: 24),
+                  Divider(color: Colors.grey[300]),
+
+                  // Features Section
+                  SizedBox(height: 24),
+                  Text(
+                    "Features",
+                    style: GoogleFonts.poppins(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.blue[900],
                     ),
+                  ),
+                  SizedBox(height: 16),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: [
+                      _buildFeatureItem("Seat Management", Icons.event_seat),
+                      _buildFeatureItem("Attendance", Icons.people_alt),
+                      _buildFeatureItem("Payments", Icons.payment),
+                      _buildFeatureItem("Reservations", Icons.bookmark),
+                      _buildFeatureItem("Profiles", Icons.person),
+                      _buildFeatureItem("Analytics", Icons.analytics),
+                    ],
+                  ),
+                  SizedBox(height: 24),
+                  Divider(color: Colors.grey[300]),
+
+                  // Team Section
+                  SizedBox(height: 24),
+                  Text(
+                    "Our Team",
+                    style: GoogleFonts.poppins(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.blue[900],
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  _buildTeamMember(
+                    "xAI Team",
+                    "Development & Design",
+                    Icons.code,
+                  ),
+                  SizedBox(height: 12),
+                  _buildTeamMember(
+                    "Library Staff",
+                    "Content & Support",
+                    Icons.library_books,
                   ),
                 ],
               ),
             ),
 
-            // Version & Legal
+            // Footer
             Container(
-              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-              ),
+              padding: EdgeInsets.all(24),
+              color: Colors.grey[100],
               child: Column(
                 children: [
                   Text(
@@ -150,42 +155,44 @@ class AboutScreen extends StatelessWidget {
                       color: Colors.grey[600],
                     ),
                   ),
-                  SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  SizedBox(height: 20),
+                  Wrap(
+                    spacing: 32,
+                    runSpacing: 12,
+                    alignment: WrapAlignment.center,
                     children: [
                       _buildFooterLink("Privacy Policy", Icons.privacy_tip),
                       _buildFooterLink("Terms", Icons.description),
                       _buildFooterLink("FAQ", Icons.help_outline),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.email, color: Colors.blue[700]),
+                        onPressed: () =>
+                            _launchUrl("mailto:support@mylibrary.com"),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.language, color: Colors.blue[700]),
+                        onPressed: () => _launchUrl("https://mylibrary.com"),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.facebook, color: Colors.blue[700]),
+                        onPressed: () =>
+                            _launchUrl("https://facebook.com/mylibrary"),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 12),
                   Text(
                     "Made with ❤️ in India 🇮🇳",
                     style: GoogleFonts.poppins(
                       fontSize: 14,
                       color: Colors.grey[600],
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.email, color: Colors.blue),
-                        onPressed: () =>
-                            _launchUrl("mailto:support@mylibrary.com"),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.language, color: Colors.blue),
-                        onPressed: () => _launchUrl("https://mylibrary.com"),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.facebook, color: Colors.blue),
-                        onPressed: () =>
-                            _launchUrl("https://facebook.com/mylibrary"),
-                      ),
-                    ],
                   ),
                 ],
               ),
@@ -196,87 +203,75 @@ class AboutScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoCard(
-      {required IconData icon, required String title, required Widget child}) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+  Widget _buildFeatureItem(String text, IconData icon) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.blue[50],
+        borderRadius: BorderRadius.circular(20),
       ),
-      child: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Icon(icon, size: 40, color: Colors.blue[700]),
-            SizedBox(height: 12),
-            Text(
-              title,
-              style: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: Colors.blue[800],
-              ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 18, color: Colors.blue[700]),
+          SizedBox(width: 8),
+          Text(
+            text,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              color: Colors.blue[800],
             ),
-            SizedBox(height: 16),
-            child,
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildTeamMember(String name, String role, IconData icon) {
-    return ListTile(
-      leading: Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          color: Colors.blue[50],
-          borderRadius: BorderRadius.circular(12),
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.blue[50],
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: Colors.blue[700], size: 24),
         ),
-        child: Icon(icon, color: Colors.blue[700]),
-      ),
-      title: Text(
-        name,
-        style: GoogleFonts.poppins(
-          fontWeight: FontWeight.w600,
+        SizedBox(width: 16),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              name,
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[800],
+              ),
+            ),
+            Text(
+              role,
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
         ),
-      ),
-      subtitle: Text(
-        role,
-        style: GoogleFonts.poppins(
-          color: Colors.grey[600],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFeatureChip(String text) {
-    return Chip(
-      label: Text(text),
-      backgroundColor: Colors.blue[50],
-      labelStyle: GoogleFonts.poppins(
-        color: Colors.blue[800],
-        fontSize: 13,
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: BorderSide(color: Colors.blue[100]!),
-      ),
+      ],
     );
   }
 
   Widget _buildFooterLink(String text, IconData icon) {
     return TextButton.icon(
-      onPressed: () {
-        // Handle navigation to respective pages
-      },
-      icon: Icon(icon, size: 18, color: Colors.blue),
+      onPressed: () {},
+      icon: Icon(icon, size: 18, color: Colors.blue[700]),
       label: Text(
         text,
         style: GoogleFonts.poppins(
-          fontSize: 13,
-          color: Colors.blue,
+          fontSize: 14,
+          color: Colors.blue[700],
         ),
       ),
     );

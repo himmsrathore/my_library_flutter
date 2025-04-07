@@ -57,6 +57,8 @@ flutter:
 
   assets:
     - assets/logo/logo.png
+    - assets/logo/logo-2.png
+    - assets/logo/logo-light.png
     - assets/images/pattern.png
     - assets/animations/loading.json  # ✅ Add this line
 
