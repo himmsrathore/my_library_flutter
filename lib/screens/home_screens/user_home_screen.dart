@@ -41,7 +41,6 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         errorMessage = null;
       });
 
-      // Use the service to fetch all data at once
       final data = await _libraryService.fetchAllHomeData();
 
       setState(() {
@@ -63,7 +62,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
       body: isLoading
           ? _buildLoadingState()
           : errorMessage != null
@@ -71,110 +70,82 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               : RefreshIndicator(
                   key: _refreshKey,
                   onRefresh: fetchAllData,
-                  color: const Color.fromARGB(255, 15, 6, 84),
+                  color: Color(0xFF3B82F6),
                   child: CustomScrollView(
                     physics: const BouncingScrollPhysics(),
                     slivers: [
                       _buildAppBar(),
                       SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildUserInfoSection(),
-                              const SizedBox(height: 24),
-                              _buildBannerSection(),
-                              const SizedBox(height: 24),
-                              _buildGallerySection(),
-                              const SizedBox(height: 24),
-                              _buildBooksSection(),
-                              const SizedBox(height: 32),
-                            ],
-                          ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildBannerSection(), // Banner carousel at the top
+                            Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildUserInfoSection(), // Student info card
+                                  SizedBox(height: 16),
+                                  Divider(
+                                      thickness: 1, color: Colors.grey[300]),
+                                  SizedBox(height: 16),
+                                  _buildGallerySection(),
+                                  SizedBox(height: 16),
+                                  Divider(
+                                      thickness: 1, color: Colors.grey[300]),
+                                  SizedBox(height: 16),
+                                  _buildBooksSection(),
+                                  SizedBox(height: 24),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _refreshKey.currentState?.show();
-        },
-        backgroundColor: const Color.fromARGB(255, 8, 11, 58),
-        child: const Icon(Icons.refresh, color: Colors.white),
-        elevation: 4,
+        onPressed: () => _refreshKey.currentState?.show(),
+        backgroundColor: Color(0xFF3B82F6),
+        shape: CircleBorder(),
+        mini: true,
+        child: Icon(Icons.refresh, color: Colors.white, size: 20),
       ),
     );
   }
 
   Widget _buildLoadingState() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.teal[600]!),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            "Loading your library...",
-            style: GoogleFonts.poppins(
-              fontSize: 16,
-              color: Colors.grey[600],
-            ),
-          ),
-        ],
-      ),
-    );
+        child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF3B82F6))));
   }
 
   Widget _buildErrorState() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 60,
-              color: Colors.red[400],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              "Oops! Something went wrong",
-              style: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.red[400],
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              errorMessage!,
-              style: GoogleFonts.poppins(
-                fontSize: 16,
-                color: Colors.grey[700],
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: fetchAllData,
-              icon: const Icon(Icons.refresh),
-              label: const Text("Try Again"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[600],
-                foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
+            Icon(Icons.error_outline, size: 40, color: Color(0xFFF87171)),
+            SizedBox(height: 8),
+            Text("Something went wrong",
+                style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFFF87171))),
+            SizedBox(height: 4),
+            Text(errorMessage!,
+                style:
+                    GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600]),
+                textAlign: TextAlign.center),
+            SizedBox(height: 16),
+            TextButton(
+                onPressed: fetchAllData,
+                child: Text("Retry",
+                    style: GoogleFonts.poppins(color: Color(0xFF3B82F6)))),
           ],
         ),
       ),
@@ -183,341 +154,80 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   Widget _buildAppBar() {
     return SliverAppBar(
-      expandedHeight: 180,
+      expandedHeight: 100, // Fixed height
       floating: false,
       pinned: true,
-      snap: false,
-      stretch: true,
-      backgroundColor: const Color(0xFF0A0E2E),
-      systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
-        statusBarColor: Colors.transparent,
-      ),
-      flexibleSpace: FlexibleSpaceBar(
-        stretchModes: const [
-          StretchMode.zoomBackground,
-          StretchMode.blurBackground,
-        ],
-        centerTitle: true,
-        title: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Text(
-            libraryDetails?.name?.toUpperCase() ?? "MY LIBRARY",
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
-              letterSpacing: 1.2,
-              color: Colors.white, // This is the only line you need to change
-              shadows: [
-                Shadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        background: Stack(
-          fit: StackFit.expand,
-          children: [
-            // Gradient background
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    const Color(0xFF1A237E),
-                    const Color(0xFF0A0E2E).withOpacity(0.9),
-                  ],
-                ),
-              ),
-            ),
-            // Subtle pattern overlay
-            Opacity(
-              opacity: 0.05,
-              child: Image.asset(
-                'assets/images/pattern.png', // Add a subtle pattern asset
-                fit: BoxFit.cover,
-              ),
-            ),
-            // Library icon decoration
-            Positioned(
-              right: 20,
-              bottom: 20,
-              child: Opacity(
-                opacity: 0.2,
-                child: Icon(
-                  Icons.library_books,
-                  size: 120,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      shape: const ContinuousRectangleBorder(
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(40),
-          bottomRight: Radius.circular(40),
-        ),
+      backgroundColor: Color(0xFF1E3A8A),
+      systemOverlayStyle: SystemUiOverlayStyle.light,
+      title: Text(
+        libraryDetails?.name?.toUpperCase() ?? "MY LIBRARY",
+        style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600, fontSize: 18, color: Colors.white),
       ),
       actions: [
-        const SizedBox(width: 8),
         IconButton(
-          icon: Container(
-            padding: const EdgeInsets.all(6),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.1),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.3),
-                width: 1,
-              ),
-            ),
-            child: const Icon(
-              Icons.person_outline,
-              color: Colors.white,
-              size: 20,
-            ),
-          ),
+          icon: Icon(Icons.person_outline, color: Colors.white, size: 24),
           onPressed: () {
             if (user != null) {
               Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UserProfileScreen(user: user!),
-                ),
-              );
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => UserProfileScreen(user: user!)));
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'User profile not available',
-                    style: GoogleFonts.poppins(),
-                  ),
-                  backgroundColor: Colors.red[400],
-                ),
-              );
+                  SnackBar(content: Text("User profile not available")));
             }
           },
         ),
-        const SizedBox(width: 12),
-      ],
-      leading: IconButton(
-        icon: Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white.withOpacity(0.1),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.3),
-              width: 1,
-            ),
-          ),
-          child: const Icon(
-            Icons.menu,
-            color: Colors.white,
-            size: 20,
-          ),
-        ),
-        onPressed: () {},
-      ),
-    );
-  }
-
-  Widget _buildUserInfoSection() {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.blue[100],
-                  child: Text(
-                    user?.name?.substring(0, 1).toUpperCase() ?? "U",
-                    style: GoogleFonts.poppins(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue[800],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Welcome,",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      Text(
-                        user?.name ?? "User",
-                        style: GoogleFonts.poppins(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue[800],
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            const Divider(),
-            const SizedBox(height: 8),
-            _buildInfoRow(Icons.email_outlined, "Email", user?.email ?? "N/A"),
-            const SizedBox(height: 8),
-            _buildInfoRow(
-                Icons.badge_outlined, "Library ID", user?.libraryId ?? "N/A"),
-            const SizedBox(height: 8),
-            _buildInfoRow(
-              Icons.location_on_outlined,
-              "Address",
-              libraryDetails?.address ?? "N/A",
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 20,
-          color: Colors.blue[600],
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
-              ),
-              Text(
-                value,
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
+        SizedBox(width: 8),
       ],
     );
   }
 
   Widget _buildBannerSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildSectionHeader("Announcements", Icons.campaign_outlined),
-        const SizedBox(height: 12),
-        if (banners == null || banners!.isEmpty)
-          _buildEmptyState("No announcements available at the moment")
-        else
-          SizedBox(
-            height: 180,
-            child: ListView.builder(
+    return Container(
+      height: 160, // Fixed height for carousel
+      child: (banners == null || banners!.isEmpty)
+          ? _buildEmptyState("No announcements")
+          : ListView.builder(
               scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
+              physics: BouncingScrollPhysics(),
               itemCount: banners!.length,
               itemBuilder: (context, index) {
                 final banner = banners![index];
                 return Container(
-                  width: MediaQuery.of(context).size.width * 0.85,
-                  margin: EdgeInsets.only(
-                    left: index == 0 ? 0 : 8,
-                    right: index == banners!.length - 1 ? 0 : 8,
+                  width: MediaQuery.of(context).size.width *
+                      0.8, // 80% of screen width
+                  margin: EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          blurRadius: 8,
+                          offset: Offset(0, 4))
+                    ],
+                    border: Border.all(color: Colors.grey[200]!, width: 1),
                   ),
-                  child: Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    clipBehavior: Clip.antiAlias,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
                     child: Stack(
+                      fit: StackFit.expand,
                       children: [
-                        Positioned.fill(
-                          child: Image.network(
-                            banner.image,
-                            fit: BoxFit.cover,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
-                                color: Colors.grey[200],
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                .cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
-                                        : null,
-                                  ),
-                                ),
-                              );
-                            },
-                            errorBuilder: (context, url, error) => Container(
-                              color: Colors.grey[200],
-                              child: const Icon(
-                                Icons.broken_image,
-                                size: 50,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ),
-                        ),
+                        Image.network(banner.image, fit: BoxFit.cover),
                         Positioned(
                           bottom: 0,
                           left: 0,
                           right: 0,
                           child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: [
-                                  Colors.black.withOpacity(0.7),
-                                  Colors.transparent,
-                                ],
-                              ),
-                            ),
+                            padding: EdgeInsets.all(8),
+                            color: Colors.black.withOpacity(0.5),
                             child: Text(
                               banner.title,
                               style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500),
                             ),
                           ),
                         ),
@@ -527,8 +237,61 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 );
               },
             ),
+    );
+  }
+
+  Widget _buildUserInfoSection() {
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              blurRadius: 10,
+              offset: Offset(0, 4))
+        ],
+        border: Border.all(color: Colors.grey[300]!, width: 1),
+      ),
+      child: Row(
+        children: [
+          CircleAvatar(
+            radius: 24,
+            backgroundColor: Color(0xFFBFDBFE),
+            child: Text(
+              user?.name?.substring(0, 1).toUpperCase() ?? "U",
+              style:
+                  GoogleFonts.poppins(fontSize: 20, color: Color(0xFF1E3A8A)),
+            ),
           ),
-      ],
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  user?.name ?? "User",
+                  style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF1E3A8A)),
+                ),
+                Divider(thickness: 1, color: Colors.grey[300], height: 8),
+                Text("Email: ${user?.email ?? 'N/A'}",
+                    style: GoogleFonts.poppins(
+                        fontSize: 12, color: Colors.grey[600])),
+                Text("Library ID: ${user?.libraryId ?? 'N/A'}",
+                    style: GoogleFonts.poppins(
+                        fontSize: 12, color: Colors.grey[600])),
+                Text("Address: ${libraryDetails?.address ?? 'N/A'}",
+                    style: GoogleFonts.poppins(
+                        fontSize: 12, color: Colors.grey[600])),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -536,76 +299,41 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader("Gallery", Icons.photo_library_outlined),
-        const SizedBox(height: 12),
+        Text("Gallery",
+            style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1E3A8A))),
+        SizedBox(height: 8),
         if (galleryImages == null || galleryImages!.isEmpty)
-          _buildEmptyState("No gallery images available")
+          _buildEmptyState("No gallery images")
         else
           GridView.builder(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 0.85,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
+              childAspectRatio: 1,
             ),
             itemCount: galleryImages!.length,
             itemBuilder: (context, index) {
               final image = galleryImages![index];
-              return Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      child: Image.network(
-                        image.image,
-                        fit: BoxFit.cover,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Container(
-                            color: Colors.grey[200],
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                value: loadingProgress.expectedTotalBytes !=
-                                        null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
-                                    : null,
-                              ),
-                            ),
-                          );
-                        },
-                        errorBuilder: (context, url, error) => Container(
-                          color: Colors.grey[200],
-                          child: const Icon(
-                            Icons.broken_image,
-                            size: 30,
-                            color: Colors.red,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      color: Colors.white,
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        image.title,
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 6,
+                        offset: Offset(0, 2))
                   ],
+                  border: Border.all(color: Colors.grey[200]!, width: 1),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(image.image, fit: BoxFit.cover),
                 ),
               );
             },
@@ -618,73 +346,68 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader("Books", Icons.book_outlined),
-        const SizedBox(height: 12),
+        Text("Books",
+            style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1E3A8A))),
+        SizedBox(height: 8),
         if (books == null || books!.isEmpty)
           _buildEmptyState("No books available")
         else
           ListView.builder(
             shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
+            physics: NeverScrollableScrollPhysics(),
             itemCount: books!.length,
             itemBuilder: (context, index) {
               final book = books![index];
-              return Card(
-                elevation: 2,
-                margin: const EdgeInsets.only(bottom: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+              return Container(
+                margin: EdgeInsets.only(bottom: 8),
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 6,
+                        offset: Offset(0, 2))
+                  ],
+                  border: Border.all(color: Colors.grey[200]!, width: 1),
                 ),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  leading: Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.blue[50],
-                      borderRadius: BorderRadius.circular(8),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          color: Color(0xFFBFDBFE),
+                          borderRadius: BorderRadius.circular(8)),
+                      child:
+                          Icon(Icons.book, color: Color(0xFF1E3A8A), size: 20),
                     ),
-                    child: Icon(
-                      Icons.book,
-                      color: Colors.blue[800],
-                      size: 28,
-                    ),
-                  ),
-                  title: Text(
-                    book.title,
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                  ),
-                  trailing: ElevatedButton.icon(
-                    onPressed: () async {
-                      final Uri url = Uri.parse(book.file);
-                      if (await canLaunchUrl(url)) {
-                        await launchUrl(url,
-                            mode: LaunchMode.externalApplication);
-                      } else {
-                        print("Could not launch ${book.file}");
-                      }
-                    },
-                    icon: const Icon(Icons.download, size: 18),
-                    label: const Text("Download"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue[600],
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        book.title,
+                        style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF1E3A8A)),
                       ),
                     ),
-                  ),
+                    TextButton(
+                      onPressed: () async {
+                        final Uri url = Uri.parse(book.file);
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url,
+                              mode: LaunchMode.externalApplication);
+                        }
+                      },
+                      child: Text("Download",
+                          style: GoogleFonts.poppins(
+                              color: Color(0xFF3B82F6), fontSize: 12)),
+                    ),
+                  ],
                 ),
               );
             },
@@ -693,58 +416,16 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     );
   }
 
-  Widget _buildSectionHeader(String title, IconData icon) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          color: Colors.blue[800],
-          size: 24,
-        ),
-        const SizedBox(width: 8),
-        Text(
-          title,
-          style: GoogleFonts.poppins(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.teal[800],
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildEmptyState(String message) {
-    return Card(
-      elevation: 0,
-      color: Colors.grey[100],
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey[300]!),
+    return Container(
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[300]!, width: 1),
       ),
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.info_outline,
-              size: 40,
-              color: Colors.grey[500],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              message,
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
+      child: Text(message,
+          style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[600])),
     );
   }
 }

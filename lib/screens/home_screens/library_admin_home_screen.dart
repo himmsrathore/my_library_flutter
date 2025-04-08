@@ -116,7 +116,7 @@ class DashboardHome extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Welcome, Libbbbb Admin!",
+                  "Welcome, Libbbbb!",
                   style: GoogleFonts.poppins(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,

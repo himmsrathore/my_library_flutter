@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mylibrary/screens/login_screen.dart'; // Adjust the path
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mylibrary/theme.dart'; // Import theme.dart
+import 'package:mylibrary/screens/contact_admin_screen.dart';
+
 // Add this package
 
 void main() {
@@ -17,6 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.light(), // Apply a theme
       initialRoute: '/splash',
       routes: {
+        '/contact-admin': (context) => ContactAdminScreen(),
         '/splash': (context) => SplashScreen(),
         '/login': (context) => LoginScreen(),
       },

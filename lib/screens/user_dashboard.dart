@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mylibrary/screens/menus/super_admin_menu.dart';
 import 'package:mylibrary/screens/menus/admin_menu.dart';
 import 'package:mylibrary/screens/menus/user_menu.dart';
-import 'package:mylibrary/screens/library_admin_dashboard.dart'; // Import the standalone dashboard
+import 'package:mylibrary/screens/admin/library_admin_dashboard.dart'; // Import the standalone dashboard
 
 class UserDashboard extends StatefulWidget {
   final String userRole;
